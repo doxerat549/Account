@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | NimaGame 🎮</title>
+
+<!-- Fonts from Fontsource CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/orbitron@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/orbitron@latest/900.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@latest/700.css">
+
+<style>
+  :root{
+    --bg-1:#07070f;
+    --bg-2:#0d0b1f;
+    --neon-purple:#a855f7;
+    --neon-cyan:#22d3ee;
+    --neon-pink:#f472b6;
+    --card-bg:rgba(17,15,38,.75);
+    --text:#e6e6f2;
+    --muted:#9b9bb4;
+    --err:#fb7185;
+    --ok:#34d399;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg-1);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+  }
+
+  h1,h2,h3,.logo-font,.submit-btn,.again-btn{font-family:'Orbitron','Inter',sans-serif;}
+
+  /* ===== Background ===== */
+  .bg-layer{
+    position:fixed; inset:0; z-index:-3;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 10%, rgba(168,85,247,.22), transparent 60%),
+      radial-gradient(ellipse 70% 55% at 20% 85%, rgba(34,211,238,.15), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(244,114,182,.07), transparent 70%),
+      linear-gradient(160deg, var(--bg-2) 0%, var(--bg-1) 55%, #050311 100%);
+  }
+  .grid-layer{
+    position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(168,85,247,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34,211,238,.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 90% 80% at 50% 50%, black 30%, transparent 85%);
+    -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 50%, black 30%, transparent 85%);
+  }
+  #particles{position:fixed; inset:0; z-index:-1; pointer-events:none;}
+
+  /* ===== Card ===== */
+  .card-wrap{position:relative;width:100%;max-width:520px;}
+  .card-wrap::before{
+    content:'';position:absolute;inset:-2px;border-radius:26px;z-index:-1;
+    background:conic-gradient(from var(--angle,0deg),var(--neon-purple),var(--neon-cyan),var(--neon-pink),var(--neon-purple));
+    animation:spinBorder 6s linear infinite;
+    filter:blur(2px);opacity:.85;
+  }
+  @property --angle{syntax:'<angle>';initial-value:0deg;inherits:false;}
+  @keyframes spinBorder{to{--angle:360deg;}}
+
+  .card{
+    background:var(--card-bg);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-radius:24px;border:1px solid rgba(255,255,255,.09);
+    padding:clamp(26px,5vw,40px);
+    box-shadow:0 24px 60px rgba(0,0,0,.55);
+  }
+
+  .card-logo{
+    width:58px;height:58px;margin:0 auto 22px;border-radius:16px;
+    display:grid;place-items:center;font-size:1.7rem;
+    background:linear-gradient(135deg,var(--neon-purple),var(--neon-cyan));
+    animation:pulseGlow 2.6s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{box-shadow:0 0 16px rgba(168,85,247,.45);}
+    50%{box-shadow:0 0 32px rgba(34,211,238,.65);}
+  }
+
+  /* ===== Fields ===== */
+  .field{margin-bottom:22px;}
+  .field .label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;gap:10px;}
+  .field .lbl{font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px;}
+  .field .lbl .num{
+    font-size:.7rem;font-weight:700;color:var(--neon-cyan);letter-spacing:.5px;
+    background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.35);
+    padding:3px 10px;border-radius:999px;text-transform:uppercase;
+  }
+  .field .counter{font-size:.75rem;color:var(--muted);white-space:nowrap;}
+
+  .field input,.field textarea{
+    width:100%;font-family:inherit;font-size:.98rem;color:var(--text);
+    background:rgba(5,5,14,.65);
+    border:1.5px solid rgba(255,255,255,.1);
+    border-radius:14px;padding:14px 16px;outline:none;
+    transition:.25s;resize:vertical;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:#5d5d78;}
+  .field input:focus,.field textarea:focus{
+    border-color:var(--neon-purple);
+    box-shadow:0 0 0 4px rgba(168,85,247,.15),0 0 22px rgba(168,85,247,.25);
+    background:rgba(10,8,26,.8);
+  }
+  .field.invalid input,.field.invalid textarea{
+    border-color:var(--err);
+    box-shadow:0 0 0 4px rgba(251,113,133,.12);
+    animation:shake .35s;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-5px)}
+    75%{transform:translateX(5px)}
+  }
+  .err-msg{display:none;color:var(--err);font-size:.8rem;margin-top:7px;font-weight:700;}
+  .field.invalid .err-msg{display:block;}
+
+  /* ===== Button ===== */
+  .submit-btn{
+    width:100%;border:none;cursor:pointer;
+    font-size:1rem;font-weight:700;letter-spacing:1px;color:#fff;
+    background:linear-gradient(135deg,var(--neon-purple),#7c3aed 50%,var(--neon-cyan));
+    background-size:200% auto;
+    border-radius:15px;padding:16px;
+    transition:.3s;position:relative;overflow:hidden;
+    box-shadow:0 10px 30px rgba(168,85,247,.35);
+    text-transform:uppercase;
+  }
+  .submit-btn:hover:not(:disabled){
+    background-position:right center;transform:translateY(-2px);
+    box-shadow:0 14px 40px rgba(34,211,238,.4);
+  }
+  .submit-btn:active:not(:disabled){transform:translateY(0) scale(.985);}
+  .submit-btn:disabled{opacity:.75;cursor:wait;}
+  .submit-btn .spinner{
+    display:none;width:18px;height:18px;vertical-align:-4px;margin-left:8px;
+    border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;
+    animation:rot .7s linear infinite;
+  }
+  .submit-btn.loading .spinner{display:inline-block;}
+  @keyframes rot{to{transform:rotate(360deg)}}
+
+  .form-error{
+    display:none;margin-top:16px;padding:13px 16px;border-radius:13px;
+    background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.4);
+    color:var(--err);font-size:.88rem;font-weight:700;line-height:1.7;text-align:center;
+  }
+  .form-error.show{display:block;animation:shake .35s;}
+
+  /* ===== Success panel ===== */
+  .success-panel{display:none;text-align:center;padding:26px 6px;}
+  .success-panel.show{display:block;animation:popIn .55s cubic-bezier(.2,1.4,.4,1);}
+  @keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+  .success-panel .check{
+    width:96px;height:96px;margin:0 auto 22px;border-radius:50%;
+    display:grid;place-items:center;font-size:2.6rem;
+    background:radial-gradient(circle,rgba(52,211,153,.22),rgba(52,211,153,.05));
+    border:2px solid var(--ok);
+    animation:pulseOk 2s ease-in-out infinite;
+  }
+  @keyframes pulseOk{
+    0%,100%{box-shadow:0 0 24px rgba(52,211,153,.35);}
+    50%{box-shadow:0 0 48px rgba(52,211,153,.6);}
+  }
+  .success-panel h3{font-size:1.35rem;font-weight:900;margin-bottom:12px;letter-spacing:.5px;}
+  .success-panel p{color:var(--muted);line-height:1.9;margin-bottom:24px;font-size:.93rem;}
+  .again-btn{
+    cursor:pointer;font-weight:700;font-size:.85rem;letter-spacing:1px;
+    color:var(--neon-cyan);background:transparent;text-transform:uppercase;
+    border:1.5px solid rgba(34,211,238,.5);border-radius:13px;padding:13px 30px;
+    transition:.25s;
+  }
+  .again-btn:hover{background:rgba(34,211,238,.1);box-shadow:0 0 20px rgba(34,211,238,.3);transform:translateY(-2px);}
+
+  /* ===== Confetti ===== */
+  .confetti-piece{
+    position:fixed;top:-14px;z-index:999;pointer-events:none;
+    width:10px;height:16px;border-radius:3px;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{transform:translateY(110vh) rotate(720deg);opacity:.2;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="grid-layer"></div>
+<canvas id="particles"></canvas>
+
+<!-- ===== Form Card ===== -->
+<div class="card-wrap">
+  <div class="card">
+
+    <div id="formSection">
+      <div class="card-logo">🔓</div>
+
+      <!--
+        Field names stay "کادر اول" / "کادر دوم" on purpose, so the email
+        you receive from Formspree keeps the exact format you asked for:
+        کادر اول: the email the user typed
+        کادر دوم: the idea the user wrote
+        (Change the name attributes to English if you want English labels in the email.)
+      -->
+      <form id="contactForm" action="https://formspree.io/f/xoevoyzg" method="POST">
+        <input type="hidden" name="_subject" value="💡 New Collaboration Form — NimaGame">
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+        <div class="field" id="emailField">
+          <div class="label-row">
+            <span class="lbl">📧 Your Email <span class="num">Field 1</span></span>
+          </div>
+          <input type="email" id="emailInput" name="کادر اول"
+                 placeholder="example@email.com"
+                 aria-label="Field 1" autocomplete="email">
+          <div class="err-msg">⚠️ Please enter a valid email address!</div>
+        </div>
+
+        <div class="field" id="ideaField">
+          <div class="label-row">
+            <span class="lbl">💡 your password <span class="num">Field 2</span></span>
+            <span class="counter"><span id="charCount">0</span> / 1000</span>
+          </div>
+          <textarea id="ideaInput" name="کادر دوم" rows="5" maxlength="1000"
+                    placeholder="Write your idea here..."
+                    aria-label="Field 2"></textarea>
+          <div class="err-msg">⚠️ Please write a bit more (at least 10 characters)!</div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="btn-text">Send 🚀</span><span class="spinner"></span>
+        </button>
+
+        <div class="form-error" id="formError"></div>
+      </form>
+    </div>
+
+    <!-- Success panel -->
+    <div class="success-panel" id="successPanel">
+      <div class="check">✅</div>
+      <h3>SENT! 🎉</h3>
+      <p>Exactly what you typed in both fields has been emailed to me. I'll get back to you soon. 🤝</p>
+      <button class="again-btn" id="againBtn">Send Another Idea ✨</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ================= Background particles ================= */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, dots = [];
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const DOT_COUNT = Math.min(55, Math.floor(window.innerWidth / 24));
+for (let i = 0; i < DOT_COUNT; i++){
+  dots.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    vx: (Math.random() - .5) * .35,
+    vy: (Math.random() - .5) * .35,
+    r: Math.random() * 1.8 + .6,
+    c: Math.random() > .5 ? '168,85,247' : '34,211,238'
+  });
+}
+
+function drawParticles(){
+  ctx.clearRect(0, 0, W, H);
+  for (let i = 0; i < dots.length; i++){
+    const d = dots[i];
+    d.x += d.vx; d.y += d.vy;
+    if (d.x < 0 || d.x > W) d.vx *= -1;
+    if (d.y < 0 || d.y > H) d.vy *= -1;
+
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(' + d.c + ',.5)';
+    ctx.fill();
+
+    for (let j = i + 1; j < dots.length; j++){
+      const o = dots[j];
+      const dx = d.x - o.x, dy = d.y - o.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 130){
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(o.x, o.y);
+        ctx.strokeStyle = 'rgba(140,120,255,' + (0.12 * (1 - dist / 130)) + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ================= Form logic ================= */
+const form          = document.getElementById('contactForm');
+const emailInput    = document.getElementById('emailInput');
+const ideaInput     = document.getElementById('ideaInput');
+const emailField    = document.getElementById('emailField');
+const ideaField     = document.getElementById('ideaField');
+const submitBtn     = document.getElementById('submitBtn');
+const btnText       = submitBtn.querySelector('.btn-text');
+const formError     = document.getElementById('formError');
+const formSection   = document.getElementById('formSection');
+const successPanel  = document.getElementById('successPanel');
+const againBtn      = document.getElementById('againBtn');
+const charCount     = document.getElementById('charCount');
+
+ideaInput.addEventListener('input', () => {
+  charCount.textContent = ideaInput.value.length;
+  ideaField.classList.remove('invalid');
+});
+emailInput.addEventListener('input', () => emailField.classList.remove('invalid'));
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  formError.classList.remove('show');
+  emailField.classList.remove('invalid');
+  ideaField.classList.remove('invalid');
+
+  const emailVal = emailInput.value.trim();
+  const ideaVal  = ideaInput.value.trim();
+  let valid = true;
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal);
+  if (!emailOk){ emailField.classList.add('invalid'); valid = false; }
+  if (ideaVal.length < 10){ ideaField.classList.add('invalid'); valid = false; }
+  if (!valid) return;
+
+  submitBtn.disabled = true;
+  submitBtn.classList.add('loading');
+  btnText.textContent = 'Sending...';
+
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(form)
+    });
+
+    if (res.ok){
+      form.reset();
+      charCount.textContent = '0';
+      formSection.style.display = 'none';
+      successPanel.classList.add('show');
+      launchConfetti();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      if (data.errors && data.errors.length){
+        throw new Error(data.errors[0].message);
+      }
+      throw new Error('server error');
+    }
+  } catch (err){
+    formError.textContent = '😕 Sending failed! Check your connection and try again.';
+    formError.classList.add('show');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('loading');
+    btnText.textContent = 'Send 🚀';
+  }
+});
+
+againBtn.addEventListener('click', () => {
+  successPanel.classList.remove('show');
+  formSection.style.display = 'block';
+  emailInput.focus();
+});
+
+/* ================= Confetti ================= */
+function launchConfetti(){
+  const colors = ['#a855f7', '#22d3ee', '#f472b6', '#34d399', '#facc15'];
+  for (let i = 0; i < 80; i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (Math.random() * 2 + 1.8) + 's';
+    piece.style.animationDelay = (Math.random() * .6) + 's';
+    piece.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+    if (Math.random() > .6) piece.style.borderRadius = '50%';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 4200);
+  }
+}
+</script>
+</body>
+</html>
